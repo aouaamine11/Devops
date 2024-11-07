@@ -83,12 +83,6 @@
 			<url>http://172.17.0.1:8081/repository/maven-snapshots/</url>
 		</repository>
 	</distributionManagement>
-	<servers>
-		<server>
-			<id>deploymentRepo</id>
-			<username>admin</username>
-			<password>201Jmt3438??</password>
-		</server>
-	</servers>
+	
 
 </project>
