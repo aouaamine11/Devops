@@ -4,6 +4,7 @@ pipeline {
     environment {
         // Load SonarQube token from Jenkins credentials
         SONAR_TOKEN = credentials('sonar-token')
+        NEXUS_TOKEN = credentials('nexus-token')
         DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
         DOCKER_IMAGE = 'lassad2/lassaddev' // Replace with your image name
     }
@@ -53,6 +54,21 @@ pipeline {
                 sh 'mvn package'
             }
         }
+
+
+                stage('Deploy to Nexus') {
+                    steps {
+                        script {
+                            // Use the NEXUS_TOKEN for authentication in the deploy command
+                            withCredentials([string(credentialsId: 'nexus-token', variable: 'NEXUS_TOKEN')]) {
+                                sh """
+                                    mvn clean deploy -DskipTests \
+                                    -DrepositoryUrl=http://172.17.0.1:8081/repository/maven-releases/ \
+                                    -Dsecurity.token=${NEXUS_TOKEN}
+                                """
+                            }
+                        }
+                    }
 
         stage('Image') {
             steps {
