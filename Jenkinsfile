@@ -2,9 +2,8 @@ pipeline {
     agent any // Utiliser n'importe quel agent disponible pour exécuter le pipeline
 
     environment {
-        // Définir la variable d'environnement pour SonarQube si nécessaire
-        SONARQUBE_SERVER = 'SonarQubeServer' // Nom de l'installation SonarQube configurée dans Jenkins
-    }
+        SONAR_TOKEN = credentials('jenkins-sonar')
+      }
 
     stages {
         
@@ -34,20 +33,15 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-    steps {
-        // Inject SonarQube token and configure SonarQube environment
-        withSonarQubeEnv('SonarQubeServer') {
-            // Use Jenkins credentials to securely pass the SonarQube token
-            withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
-                // Execute SonarQube analysis with token authentication
-                sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
-            }
+            steps {
+            // Inject SonarQube token and configure SonarQube environment
+            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
         }
-    }
-}
+       }
+   }
 
         
- }
+   }
 
     
 }
