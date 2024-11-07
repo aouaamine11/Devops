@@ -4,6 +4,8 @@ pipeline {
     environment {
         // Load SonarQube token from Jenkins credentials
         SONAR_TOKEN = credentials('sonar-token')
+        DOCKER_CREDENTIALS_ID = 'docker-hub-credentials'
+        DOCKER_IMAGE = 'lassad2/lassaddev' // Replace with your image name
     }
 
     stages {
