@@ -56,20 +56,11 @@ pipeline {
         }
 
 
-                stage('Deploy to Nexus') {
-                    steps {
-                        script {
-                            // Use the NEXUS_TOKEN for authentication in the deploy command
-                            withCredentials([string(credentialsId: 'nexus-token', variable: 'NEXUS_TOKEN')]) {
-                                sh """
-                                    mvn clean deploy -DskipTests \
-                                    -DrepositoryUrl=http://172.17.0.1:8081/repository/maven-releases/ \
-                                    -Dsecurity.token=${NEXUS_TOKEN}
-                                """
-                            }
-                        }
-                    }
-                    }
+               stage('Deploy to Nexus') {
+                           steps {
+                               sh 'mvn clean deploy -DskipTests'
+                           }
+                       }
 
         stage('Image') {
             steps {
