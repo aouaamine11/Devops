@@ -33,29 +33,20 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            steps {
-                // Scanner le code avec SonarQube
-                withSonarQubeEnv('SonarQubeServer') { // Utilise l'environnement SonarQube configuré
-                    sh 'mvn sonar:sonar' // Exécute l'analyse SonarQube
-                }
+    steps {
+        // Inject SonarQube token and configure SonarQube environment
+        withSonarQubeEnv('SonarQubeServer') {
+            // Use Jenkins credentials to securely pass the SonarQube token
+            withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                // Execute SonarQube analysis with token authentication
+                sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
             }
         }
+    }
+}
+
         
-    }
+ }
 
-    post {
-        // Définir les actions à effectuer après l'exécution du pipeline
-        always {
-            // Publier les résultats des tests, quel que soit l'état du pipeline
-            junit '**/target/surefire-reports/*.xml' // Fichier de rapport JUnit généré par Maven
-        }
-
-        success {
-            echo 'Pipeline terminé avec succès !'
-        }
-
-        failure {
-            echo 'Le pipeline a échoué.'
-        }
-    }
+    
 }
