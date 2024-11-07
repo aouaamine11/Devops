@@ -83,7 +83,7 @@ pipeline {
                     if (!imageExists) {
                         echo 'Pushing Image to Docker Hub:'
                         sh 'docker login -u lassad2 -p 201Jmt3438'
-                        sh 'docker push lassad2/lassaddev:1.0.0'
+                        sh 'docker push lassad2/lassaddev:tagname'
                     } else {
                         echo 'Image already exists on Docker Hub, skipping push.'
                     }
