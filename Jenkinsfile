@@ -1,47 +1,51 @@
 pipeline {
-    agent any // Utiliser n'importe quel agent disponible pour exécuter le pipeline
+    agent any // Use any available agent to execute the pipeline
 
     environment {
+        // Load SonarQube token from Jenkins credentials
         SONAR_TOKEN = credentials('sonar-token')
-      }
+    }
 
     stages {
-        
+
         stage('Main') {
             steps {
-                // Étape de test ou d'affichage de message
-                echo "Echo Test of Lassad Branch" // Message simple pour vérifier que le pipeline démarre bien
+                // Simple echo to verify pipeline initiation
+                echo "Echo Test of Lassad Branch"
             }
         }
 
+        stage('Checkout') {
+            steps {
+                // Checkout source code from the configured Git repository
+                checkout scm // Uses Jenkins SCM configuration to pull the code
+            }
+        }
 
         stage('Compile') {
             steps {
-                // Extraire le code source depuis le dépôt Git configuré
-                checkout scm // Cette commande utilise la configuration SCM par défaut de Jenkins pour récupérer le code source
-
-                // Compiler le projet Maven (sans exécuter de tests)
-                sh 'mvn compile' // Exécute la commande Maven pour compiler le projet Java
+                // Compile the project with Maven (without running tests)
+                sh 'mvn compile' // Runs Maven command to compile the Java project
             }
         }
 
         stage('Test') {
             steps {
-                // Exécuter les tests avec Maven
-                sh 'mvn test' // Cette commande exécute tous les tests unitaires de votre projet
+                // Run unit tests with Maven
+                sh 'mvn test' // Executes all unit tests in the project
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-            // Inject SonarQube token and configure SonarQube environment
-            sh 'mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}'
+                // Perform SonarQube analysis using the SonarQube token and host URL
+                sh """
+                mvn sonar:sonar \
+                    -Dsonar.login=${SONAR_TOKEN}
+                """
+            }
         }
-       }
-   }
+    }
 
-        
-   }
 
-    
 }
