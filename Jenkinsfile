@@ -2,7 +2,7 @@ pipeline {
     agent any // Utiliser n'importe quel agent disponible pour exécuter le pipeline
 
     environment {
-        SONAR_TOKEN = credentials('jenkins-sonar')
+        SONAR_TOKEN = credentials('sonar-token')
       }
 
     stages {
@@ -35,7 +35,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
             // Inject SonarQube token and configure SonarQube environment
-            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
+            sh 'mvn sonar:sonar -Dsonar.login=${SONAR_TOKEN}'
         }
        }
    }
