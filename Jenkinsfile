@@ -58,7 +58,10 @@ pipeline {
 
                stage('Deploy to Nexus') {
                            steps {
-                               sh 'mvn clean deploy -DskipTests'
+                               // Deploy artifact to Nexus with token
+                               withCredentials([string(credentialsId: 'nexus-token', variable: 'NEXUS_TOKEN')]) {
+                                   sh 'mvn clean deploy -DskipTests -DrepositoryId=nexus-repo-id -Dnexus.url=http://172.17.0.1:8081/repository/maven-releases/'
+                               }
                            }
                        }
 
