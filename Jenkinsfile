@@ -14,15 +14,7 @@ pipeline {
                 echo "Echo Test of Lassad Branch" // Message simple pour vérifier que le pipeline démarre bien
             }
         }
-stage('install') {
-            steps {
-                // Extraire le code source depuis le dépôt Git configuré
-                checkout scm // Cette commande utilise la configuration SCM par défaut de Jenkins pour récupérer le code source
 
-                // Compiler le projet Maven (sans exécuter de tests)
-                sh 'mvn install' // Exécute la commande Maven pour compiler le projet Java
-            }
-        }
 
         stage('Compile') {
             steps {
