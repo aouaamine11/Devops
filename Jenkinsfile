@@ -32,22 +32,29 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                // Run unit tests with Maven
-                sh 'mvn test' // Executes all unit tests in the project
-            }
-        }
+          stage('Unit Tests') {
+             steps {
+               echo 'Running Unit Tests with Coverage'
+               sh 'mvn -Dtest=InstructorServiceTest test jacoco:report'
+             }
+             post {
+               always {
+                 junit '**/target/surefire-reports/TEST-*.xml'
+                 jacoco execPattern: '**/target/jacoco.exec'
+               }
+             }
+           }
 
-        stage('SonarQube Analysis') {
-            steps {
-                // Perform SonarQube analysis using the SonarQube token and host URL
-                sh """
-                mvn sonar:sonar \
-                    -Dsonar.login=${SONAR_TOKEN}
-                """
-            }
-        }
+           stage('SonarQube Analysis') {
+             steps {
+               echo 'Static Analysis with SonarQube'
+               sh """
+                 mvn sonar:sonar \
+                   -Dsonar.login=${SONAR_TOKEN} \
+                   -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+               """
+             }
+           }
 
         stage('Build') {
             steps {
